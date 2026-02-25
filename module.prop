@@ -1,0 +1,6 @@
+id=VulkanRenderBoost
+name=Vulkan渲染引擎增强模块 v0855
+version=0855
+versionCode=55
+author=酷安@甜馒头 & h贝利亚h
+description=本模块将HWUI渲染方式和GPU合成引擎强制更换为Vulkan，深度适配Vulkan 1.1-1.4，支持骁龙和天玑平台
