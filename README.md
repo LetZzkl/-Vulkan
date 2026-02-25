@@ -1,0 +1,2 @@
+# -Vulkan
+将HWUI和GPU合成的渲染引擎改为SkiaVK，也就是将默认手机渲染OpenGL改成Vulkan
