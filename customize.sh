@@ -1,7 +1,7 @@
 #!/system/bin/sh
 
 ui_print "*******************************"
-ui_print " Vulkan渲染引擎增强模块 0855 "
+ui_print " Vulkan渲染引擎增强模块 0856 "
 ui_print " 基于酷安@甜馒头原版深度优化 "
 ui_print "*******************************"
 ui_print " "
@@ -52,7 +52,6 @@ go_to_coolapk() {
         UID="34256495"
         ui_print "🔄 检测酷安应用..."
         
-        
         if pm list packages | grep -q "com.coolapk.market"; then
             ui_print "✅ 检测到酷安，正在跳转到作者主页..."
             
@@ -70,7 +69,6 @@ go_to_coolapk() {
     
     ui_print " "
 }
-
 
 detect_system_type() {
     local IS_COLOROS=false
@@ -172,40 +170,12 @@ configure_vulkan_optimizations() {
     
     ui_print "⚙️  正在根据Vulkan版本配置优化参数..."
     
-    local VULKAN_API_LEVEL_RAW=$(echo "$VULKAN_VERSION" | grep -oE "1\.[0-9]\.?[0-9]?" | tr -d '.')
-    
-    local VULKAN_API_LEVEL
-    if [ ${#VULKAN_API_LEVEL_RAW} -eq 3 ] 2>/dev/null; then
-        VULKAN_API_LEVEL="$VULKAN_API_LEVEL_RAW"
-    elif [ ${#VULKAN_API_LEVEL_RAW} -eq 2 ] 2>/dev/null; then
-        VULKAN_API_LEVEL="${VULKAN_API_LEVEL_RAW}0"
-    else
-        VULKAN_API_LEVEL="0"
+    API_LEVEL=$(getprop ro.build.version.sdk)
+    if [ "$VULKAN_VERSION" = "1.3" ] && [ "$API_LEVEL" -lt 31 ]; then
+        ui_print "⚠️  系统API过低，已降级至1.1兼容模式以防黑屏"
+        VULKAN_VERSION="1.1"
     fi
 
-    local ENABLE_DYNAMIC_RENDERING="false"
-    local ENABLE_SYNCHRONIZATION2="false"
-    local ENABLE_DESCRIPTOR_INDEXING="false"
-    local VULKAN_FEATURE_LEVEL="1.1"
-    
-    if [ "$VULKAN_API_LEVEL" -ge 130 ] 2>/dev/null; then
-        ENABLE_DYNAMIC_RENDERING="true"
-        ENABLE_SYNCHRONIZATION2="true"
-        ENABLE_DESCRIPTOR_INDEXING="true"
-        VULKAN_FEATURE_LEVEL="1.3"
-        ui_print "🎯 检测到Vulkan 1.3+，启用高级特性"
-    elif [ "$VULKAN_API_LEVEL" -ge 120 ] 2>/dev/null; then
-        ENABLE_DESCRIPTOR_INDEXING="true"
-        VULKAN_FEATURE_LEVEL="1.2"
-        ui_print "🎯 检测到Vulkan 1.2，启用中级特性"
-    elif [ "$VULKAN_API_LEVEL" -ge 110 ] 2>/dev/null; then
-        VULKAN_FEATURE_LEVEL="1.1"
-        ui_print "🎯 检测到Vulkan 1.1+，使用基础特性"
-    else
-        VULKAN_FEATURE_LEVEL="1.1"
-        ui_print "⚠️  无法确定Vulkan版本，使用兼容配置 (1.1)"
-    fi
-    
     local LAYER_CACHING="false"
     case $SYSTEM_TYPE in
         "hyperos"|"aosp"|"coloros")
@@ -228,7 +198,7 @@ debug.hwui.renderer=skiavk
 debug.renderengine.backend=skiavkthreaded
 debug.renderengine.vulkan=true
 debug.stagefright.renderengine.backend=threaded
-debug.hwui.vulkan_feature_level=1.3
+debug.hwui.vulkan_feature_level=$VULKAN_VERSION
 debug.hwui.vulkan.enable_dynamic_rendering=true
 debug.hwui.vulkan.synchronization2=true
 debug.hwui.vulkan.enable_descriptor_indexing=true
@@ -250,15 +220,14 @@ debug.hwui.initialize_gl_always=true
 debug.hwui.level=0
 debug.renderengine.skia_atrace_enabled=false
 debug.sf.enable_adpf_cpu_hint=false
-
-#图层缓存属性（强！(⸝⸝•‧̫•⸝⸝)）
 debug.sf.enable_layer_caching=$LAYER_CACHING
+ro.hwui.texture_cache_size=88
 EOF
 
     ui_print "✅ 系统属性配置完成"
 }
 
-ui_print "🚀 开始安装Vulkan优化模块 0855..."
+ui_print "🚀 开始安装Vulkan优化模块 0856..."
 
 ui_print " "
 if keytest "请按键选择: 是否启用 Vulkan 1.3 ?"; then
@@ -294,5 +263,4 @@ ui_print "   • 系统类型: $SYSTEM_TYPE"
 ui_print "   • 平台专属优化已启用"
 ui_print "   • 兼容性保障已就绪"
 ui_print " "
-ui_print "✨ 刷入成功!请重启系统生效"
-ui_print "💡 如有问题请到酷安反馈详细系统信息" 
+ui_print "✨ 刷入成功!请重启系统生效 (⸝⸝•‧̫•⸝⸝)"

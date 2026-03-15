@@ -1,8 +1,3 @@
-#===============================================
-# Vulkan渲染引擎增强模块 - 稳定增强版
-# 基于酷安@甜馒头原版深度优化
-# 集成Vulkan 1.3+新特性及平台专属优化
-#===============================================
 ro.hwui.use_vulkan=true
 debug.hwui.renderer=skiavk
 debug.renderengine.backend=skiavkthreaded
@@ -30,10 +25,3 @@ debug.hwui.initialize_gl_always=true
 debug.hwui.level=0
 debug.renderengine.skia_atrace_enabled=false
 debug.sf.enable_adpf_cpu_hint=false
-# 🔧 可选实验性功能 (谨慎启用，建议初期关闭)
-# 主机图像复制 - 针对UMA架构 (Vulkan 1.4+)，可能减少卡顿[citation:3]
-# debug.hwui.vulkan.enable_host_image_copy=false
-# 细分着色器优化
-# debug.hwui.vulkan.enable_tessellation_shader=false
-# AV1视频编码扩展 (如设备支持)[citation:3]
-# debug.hwui.vulkan.enable_av1_encode=false
